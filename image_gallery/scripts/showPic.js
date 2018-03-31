@@ -36,6 +36,7 @@
 
 
 addLoadEvent(prepareGallery)
+addLoadEvent(preparePlaceholder)
 
 function addLoadEvent(func) {
     var oldEvent = window.onload;
@@ -47,7 +48,19 @@ function addLoadEvent(func) {
             func();
         }
     }
+}
 
+function insertAfter(newElement, targetElement) {
+    var parent =targetElement.parentNode;
+    if(parent == null){
+        return;
+    }
+
+    if(parent.lastChild === targetElement){
+        parent.appendChild(newElement);
+    }else{
+        parent.insertBefore(newElement, targetElement.nextSibling);
+    }
 }
 
 function prepareGallery() {
@@ -63,6 +76,27 @@ function prepareGallery() {
     }
 }
 
+function preparePlaceholder() {
+    var galerry = document.getElementById("imageGalerry");
+    if(galerry == null){
+        return false;
+    }
+
+    var placeholder = document.createElement("img");
+    placeholder.setAttribute("id", "placeholder");
+    placeholder.setAttribute("src", "images/placeholder.gif");
+    placeholder.setAttribute("alt", "my image gallery");
+
+    var description = document.createElement("p");
+    description.setAttribute("id", "description")
+    var descriptionText = document.createTextNode("Choose an image");
+    description.appendChild(descriptionText);
+
+    insertAfter(placeholder, galerry);
+    insertAfter(description, placeholder);
+
+}
+
 function popup(winURL) {
     window.open(winURL, "popup", "width=320,height=480");
 }
@@ -73,16 +107,19 @@ function popup(winURL) {
  * @returns {boolean}
  */
 function showPic(whichpic) {
-    var source = whichpic.getAttribute("href")
-    var placeholder = document.getElementById("placeholder")
+    var source = whichpic.getAttribute("href");
+    var placeholder = document.getElementById("placeholder");
     if(placeholder.nodeName != "IMG"){
         return false;
     }
-    placeholder.setAttribute("src", source)
+    placeholder.setAttribute("src", source);
 
-    var p = document.getElementById("description")
-    var text = whichpic.getAttribute("title")
-    p.firstChild.nodeValue = text
+    var p = document.getElementById("description");
+    if(p != null){
+        var text = whichpic.getAttribute("title");
+        p.firstChild.nodeValue = text;
+    }
+
 
     return true;
 }
