@@ -40,6 +40,8 @@
 //   document.body.appendChild(dlist);
 // }
 addLoadEvent(displayAbbreviations);
+addLoadEvent(displayCitations);
+
 function displayAbbreviations() {
 
     //get abbr properties
@@ -77,4 +79,31 @@ function displayAbbreviations() {
 
 
     //create abbr node
+}
+
+function displayCitations() {
+    var blockquotes = document.getElementsByTagName("blockquote");
+    if(blockquotes.length == 0){
+      return;
+    }
+    for(var i = 0; i < blockquotes.length; i++){
+      var blockquote = blockquotes[i];
+      var cite = blockquote.getAttribute("cite");
+      if(cite == null){
+        continue;
+      }
+      var childNodes = blockquote.getElementsByTagName("*");
+      if(childNodes.length == 0){
+        return;
+      }
+      var lastTextElement = blockquote.lastElementChild;
+      var sup = document.createElement("sup");
+      var a = document.createElement("a");
+      var source = document.createTextNode("source");
+      a.appendChild(source);
+      a.setAttribute("href", cite);
+      sup.appendChild(a);
+
+      lastTextElement.appendChild(sup);
+    }
 }
